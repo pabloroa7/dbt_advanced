@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: fct_sales
+    description: "Tabla de hechos de ventas transaccionales."
+    columns:
+      - name: sales_id
+        description: Identificador único de la venta realizada (PK).
+      - name: order_id
+        description: Identificador único del pedido (FK). Parte de la PK.
+      - name: line_number
+        description: Número de la línea dentro del pedido. Parte de la PK.
+      - name: part_id
+        description: Identificador del producto vendido (FK).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_parts')
+                field: part_id
+      - name: supplier_id
+        description: Identificador del proveedor que suministra el producto (FK).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_suppliers')
+                field: supplier_id
+      - name: customer_id
+        description: Identificador del cliente que realizó la compra (FK).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+      - name: order_date
+        description: Fecha de realización del pedido.
+      - name: ship_date
+        description: Fecha de envío de la línea.
+      - name: order_status
+        description: Estado general del pedido.
+      - name: return_flag
+        description: Indicador de devolución.
+      - name: line_status
+        description: Estado de la línea individual dentro del pedido.
+      - name: quantity
+        description: Cantidad de unidades vendidas.
+      - name: extended_price
+        description: Precio bruto toal antes del descuento.
+      - name: discount_percentage
+        description: Porcentaje de descuento aplicado (0 a 1).
+      - name: supply_cost
+        description: Coste de adquisición de la parte desde este proveedor.
+      - name: net_sales_amount
+        description: Venta Neta. Representa el ingreso real tras aplicar descuentos comerciales.
+      - name: total_cost_amount
+        description: Coste de los Bienes Vendidos. Representa el coste directo de la mercancía vendida.
+      - name: gross_margin_amount
+        description: Margen Bruto (Beneficio). Indica la rentabilidad directa de la línea de pedido.

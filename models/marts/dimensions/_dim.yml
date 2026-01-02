@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Dimensión de clientes enriquecida con datos geográficos."
+    columns:
+      - name: customer_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_parts
+    description: "Dimensión de productos (catálogo)."
+    columns:
+      - name: part_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_suppliers
+    description: "Dimensión de proveedores enriquecida con datos geográficos."
+    columns:
+      - name: supplier_id
+        data_tests:
+          - unique
+          - not_null

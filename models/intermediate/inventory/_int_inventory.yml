@@ -1,0 +1,20 @@
+models:
+- name: int_inventory__stock
+  description: "Modelo intermedio de inventario. Calcula la valoración total del stock disponible. Granularidad: Producto y Proveedor."
+  columns:
+  - name: inventory_id
+    description: Identificador único para cada uno de los productos de cada proveedor. (PK)
+    data_tests:
+      - unique
+      - not_null
+  - name: part_id
+    description: Identificador del producto (FK).
+  - name: supplier_id
+    description: Identificador del proveedor (FK).
+  - name: available_quantity
+    description: Cantidad física disponible en el almacén.
+  - name: unit_cost
+    description: Coste unitario de adquisición del producto.
+  - name: total_stock_value
+
+    description: "Métrica calculada: (Cantidad Disponible * Coste Unitario)."

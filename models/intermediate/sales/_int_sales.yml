@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: int_sales__order_items
+    description: Modelo intermedio de Ventas. 
+      Combina la cabecera del pedido (Orders) con el detalle (Lineitems) y enriquece
+      los datos con los costes de proveedor (PartSupp).
+    columns:
+      - name: sales_id
+        description: Identificador único de la venta realizada (PK).
+        data_tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: Identificador único del pedido (FK).
+      - name: line_number
+        description: Número de la línea dentro del pedido.
+      - name: part_id
+        description: Identificador del producto vendido (FK).
+      - name: supplier_id
+        description: Identificador del proveedor que suministra el producto (FK).
+      - name: customer_id
+        description: Identificador del cliente que realizó la compra (FK).
+      - name: order_date
+        description: Fecha de realización del pedido.
+      - name: ship_date
+        description: Fecha de envío de la línea.
+      - name: order_status
+        description: Estado general del pedido.
+      - name: return_flag
+        description: Indicador de devolución.
+      - name: line_status
+        description: Estado de la línea individual dentro del pedido.
+      - name: quantity
+        description: Cantidad de unidades vendidas.
+      - name: extended_price
+        description: Precio bruto toal antes del descuento.
+      - name: discount
+        description: Porcentaje de descuento aplicado (0 a 1).
+      - name: supply_cost
+        description: Coste de adquisición de la parte desde este proveedor.
+      - name: net_sales_amount
+        description: Venta Neta. Representa el ingreso real tras aplicar descuentos comerciales.
+      - name: total_cost_amount
+        description: Coste de los Bienes Vendidos. Representa el coste directo de la mercancía vendida.
+      - name: gross_margin_amount
+        description: Margen Bruto (Beneficio). Indica la rentabilidad directa de la línea de pedido.

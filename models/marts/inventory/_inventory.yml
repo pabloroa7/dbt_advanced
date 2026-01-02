@@ -1,0 +1,28 @@
+version: 2
+
+models:
+- name: fct_inventory
+  description: Tabla de hechos del inventario. Muestra el stock actual por producto y proveedor.
+  columns:
+  - name: inventory_id
+    description: Identificador único para cada uno de los productos de cada proveedor. (PK)
+  - name: part_id
+    description: Identificador del producto (FK).
+    data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_parts')
+                field: part_id
+  - name: supplier_id
+    description: Identificador del proveedor (FK).
+    data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_suppliers')
+                field: supplier_id
+  - name: available_quantity
+    description: Cantidad física disponible en el almacén.
+  - name: supply_cost
+    description: Coste unitario de adquisición del producto.
+  - name: total_stock_value
+    description: "Métrica calculada: (Cantidad Disponible * Coste Unitario)."

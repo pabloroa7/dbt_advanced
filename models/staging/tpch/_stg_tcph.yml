@@ -1,0 +1,239 @@
+version: 2
+
+models:
+  # 1. Tablas con IDs Únicos
+  - name: stg_tpch__orders
+    description: "Tabla de pedidos. Contiene información general de cada transacción realizada por un cliente. Estrategia de carga: Incremental."
+    columns:
+      - name: order_id
+        description: Identificador único del pedido. (Clave primeria)
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: Identificador del cliente que realizó el pedido. (Clave foránea)
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_tpch__customer')
+                field: customer_id
+      - name: order_status
+        description: "{{ doc('order_status_code') }}"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['O', 'F', 'P']
+      - name: total_price
+        description: Valor total del pedido.
+      - name: order_date
+        description: Fecha en la que se realizó el pedido.
+      - name: order_priority
+        description: Nivel de prioridad del pedido.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['1-URGENT', '2-HIGH', '3-MEDIUM', '4-NOT SPECIFIED', '5-LOW']
+      - name: clerk
+        description: Identificador del empleado que procesó el pedido.
+      - name: ship_priority
+        description: Nivel de prioridad del envío.
+      - name: comment
+        description: Comentarios o notas adicionales sobre el pedido.
+
+  - name: stg_tpch__customer
+    description: Tabla de clientes. Contiene información demográfica y del estado de la cuenta.
+    columns:
+      - name: customer_id
+        description: Identificador único de cada cliente (PK).
+        data_tests:
+          - unique
+          - not_null
+      - name: name
+        description: Nombre completo del cliente.
+      - name: address
+        description: Dirección postal del cliente.
+      - name: nation_id
+        description: Identificador de la nación de residencia (FK).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_tpch__nation')
+                field: nation_id
+      - name: phone
+        description: Número de teléfono de contacto.
+      - name: account_balance
+        description: Saldo actual de la cuenta del cliente.
+      - name: market_segment
+        description: Segmento de mercado al que pertenece.
+      - name: comment
+        description: Notas o comentarios adicionales sobre el cliente.
+
+  - name: stg_tpch__supplier
+    description: Tabla de los proveedores. Empresas que suministran lso productos.
+    columns:
+      - name: supplier_id
+        description: Identificador único del proveesor (PK).
+        data_tests:
+          - unique
+          - not_null
+      - name: name
+        description: Nombre del proveedor.
+      - name: address
+        description: Dirección postal del proveedor.
+      - name: nation_id
+        description: Identificador de la nación donde opera el proveedor (PK).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_tpch__nation')
+                field: nation_id
+      - name: phone
+        description: Teléfono de contacto del proveedor.
+      - name: account_balance
+        description: Saldo de la cuenta del proveedor.
+      - name: comment
+        description: Notas o comentarios adicionales sobre el proveedor.
+        
+  - name: stg_tpch__part
+    description: Tabla de los productos (partes). Define las características de los artículos
+    columns:
+      - name: part_id
+        description: Identificador único del producto (PK).
+        data_tests:
+          - unique
+          - not_null
+      - name: name
+        description: Nombre descriptivo del producto.
+      - name: manufaturer
+        description: Nombre del fabricante original.
+      - name: brand
+        description: Marca del producto.
+      - name: type
+        description: Tipo de material o categoría del producto.
+      - name: size
+        description: Tamaño del producto.
+      - name: container
+        description: Tipo de contenedor o empaquetado.
+      - name: retail_price
+        description: Precio de venta al público.
+      - name: comment
+        description: Notas o comentarios adicionales sobre el producto.
+
+  - name: stg_tpch__nation
+    description: Tabla referencia de naciones. Se usa para clientes y proveedores.
+    columns:
+      - name: nation_id
+        description: Identificador único de la nación (PK).
+        data_tests:
+          - unique
+          - not_null
+      - name: name
+        description: Nombre completo de la nación.
+      - name: region_id
+        description: Identificador de la región a la que pertenece (FK).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_tpch__region')
+                field: region_id
+      - name: comment
+        description: Notas o comentarios adicionales sobre la nación.
+
+  - name: stg_tpch__region
+    description: Tabla de referencia de las regiones.
+    columns:
+      - name: region_id
+        description: Identificador único de la región (PK).
+        data_tests:
+          - unique
+          - not_null
+      - name: name
+        description: Nombre de la región.
+      - name: comment
+        description: Notas o comentarios adicionales sobre la región.
+
+  # 2. Tablas con Claves Compuestas
+  - name: stg_tpch__lineitem
+    description: "Tabla de detalle de pedidos. Representa cada producto individual dentro de un pedido. Granularidad: Una fila por producto en cada pedido"
+    columns:
+      - name: order_id
+        description: Identificador del pedido al que pertenece la línea (FK). Junto con line_number forma la PK.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_tpch__orders')
+                field: order_id
+      - name: line_number
+        description: Número secuencial de la línea dentro del pedido. Junto con order_id forma la PK.
+        data_tests:
+          - not_null
+      - name: part_id
+        description: Identificador del producto vendido (FK).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_tpch__part')
+                field: part_id
+      - name: supplier_id
+        description: Identificador del proveedor que suministra este producto específico (FK).
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_tpch__supplier')
+                field: supplier_id
+      - name: quantity
+        description: Cantidad pedida de unidades del producto.
+      - name: extended_price
+        description: Precio extendido (Precio Unitario * Cantidad) sin aplicar descuentos ni impuestos.
+      - name: discount
+        description: Descuento aplicado a la línea como fracción decimal.
+      - name: tax
+        description: Impuesto aplicable a la línea como fracción decimal.
+      - name: return_flag
+        description: "{{ doc('return_flag_code') }}"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['R', 'N', 'A']
+      - name: status_code
+        description: "{{ doc('line_status_code') }}"
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['O', 'F']
+      - name: ship_date
+        description: The date the product was shipped to the customer.
+      - name: commit_date
+        description: Fecha comprometida de entrega.
+      - name: receipt_date
+        description: Fecha en la que el cliente recibió el producto.
+      - name: ship_instructions
+        description: Instrucciones especiales de envío.
+      - name: ship_mode
+        description: Modo de transporte.
+      - name: comment
+        description: Notas o comentarios adicionales sobre la línea del pedido.
+
+  - name: stg_tpch__partsupp
+    description: Tabla puente entre Partes y Proveedores. Indica qué proveedor vende qué parte, a qué coste y cuánto stock tiene disponible.
+    columns:
+      - name: part_id
+        description: Identificador del producto (FK). Parte de la PK.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_tpch__part')
+                field: part_id
+      - name: supplier_id
+        description: Identificador del proveedor (FK). Parte de la PK.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_tpch__supplier')
+                field: supplier_id
+      - name: available_quantity
+        description: Cantidad disponible en stock de este proveedor para esta parte.
+      - name: supply_cost
+        description: Coste de adquisición de la parte desde este proveedor.
+      - name: comment
+        description: Notas o comentarios adicionales sobre la relación parte-proveedor.
