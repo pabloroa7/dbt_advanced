@@ -44,3 +44,11 @@ models:
 
   elementary:
     +schema: "elementary"
+
+  dbt_project_evaluator:
+    +schema: "evaluator"
+
+
+vars:
+  dbt_project_evaluator:
+    exclude_packages: ['elementary', 'dbt_expectations']

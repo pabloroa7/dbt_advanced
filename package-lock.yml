@@ -5,4 +5,7 @@ packages:
   - name: elementary
     package: elementary-data/elementary
     version: 0.21.0
-sha1_hash: 61cbd40b0b971875699057f929139af96039ee16
+  - name: dbt_project_evaluator
+    package: dbt-labs/dbt_project_evaluator
+    version: 1.1.2
+sha1_hash: 2a778879ebaefac0e6652236d2d1c3ec731c70fa
