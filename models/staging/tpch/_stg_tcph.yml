@@ -183,12 +183,30 @@ models:
                 field: supplier_id
       - name: quantity
         description: Cantidad pedida de unidades del producto.
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
       - name: extended_price
         description: Precio extendido (Precio Unitario * Cantidad) sin aplicar descuentos ni impuestos.
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
       - name: discount
         description: Descuento aplicado a la línea como fracción decimal.
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 1
       - name: tax
         description: Impuesto aplicable a la línea como fracción decimal.
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 1
       - name: return_flag
         description: "{{ doc('return_flag_code') }}"
         data_tests:
