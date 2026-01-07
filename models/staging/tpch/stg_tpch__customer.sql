@@ -2,7 +2,7 @@ with
 
 customer_raw as (
 
-    select * from {{ source('tpch', 'customer') }}
+    select * from {{ ref('snp_tpch_customers') }}
 
 ),
 
