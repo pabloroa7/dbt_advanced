@@ -155,10 +155,17 @@ models:
   # 2. Tablas con Claves Compuestas
   - name: stg_tpch__lineitem
     description: "Tabla de detalle de pedidos. Representa cada producto individual dentro de un pedido. Granularidad: Una fila por producto en cada pedido"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - order_id
+              - line_number
     columns:
       - name: order_id
         description: Identificador del pedido al que pertenece la línea (FK). Junto con line_number forma la PK.
         data_tests:
+          - not_null
           - relationships:
               arguments:
                 to: ref('stg_tpch__orders')
@@ -234,6 +241,12 @@ models:
 
   - name: stg_tpch__partsupp
     description: Tabla puente entre Partes y Proveedores. Indica qué proveedor vende qué parte, a qué coste y cuánto stock tiene disponible.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - part_id
+              - supplier_id
     columns:
       - name: part_id
         description: Identificador del producto (FK). Parte de la PK.

@@ -37,10 +37,15 @@ models:
   practice_dt:
     staging:
       +materialized: table
+      +tags: "stg"
     intermediate:
       +materialized: view
+      +tags: "int"
     marts:
       +materialized: table
+      +tags: "fct"
+      dimensions:
+        +tags: "dim"
 
   elementary:
     +schema: "elementary"

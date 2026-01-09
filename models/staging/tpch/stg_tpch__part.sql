@@ -2,7 +2,7 @@ with
 
 part_raw as (
 
-    select * from {{ ref('snp_tpch_parts') }}
+    select * from {{ source('tpch', 'part') }}
 
 ),
 

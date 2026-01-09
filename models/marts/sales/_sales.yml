@@ -6,6 +6,9 @@ models:
     columns:
       - name: sales_id
         description: Identificador único de la venta realizada (PK).
+        data_tests:
+          - unique
+          - not_null
       - name: order_id
         description: Identificador único del pedido (FK). Parte de la PK.
       - name: line_number
